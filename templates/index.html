@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class = "welcome-page">
+    <img src="static/img2.jpg" align="right" width="638" height="712">
+    <div class = "welcome-text">
+        <h1 class = "gradient-text">Welcome to the CS50 Finance Tracker</h1>
+        <p>Track your income and expenses easily.</p>
+        <p>Welcome to Finance Tracker!
+            Take control of your finances with our easy-to-use platform. Finance Tracker helps you manage your expenses, track your income, and stay on top of your financial goals. Whether you're saving for a big purchase, paying off debt, or simply wanting to understand where your money goes, our tool is here to help.
+            Get started today and take the first step towards a healthier financial future. </p>
+        <h1 class = "gradient-text-small">Sign up now and start tracking!</h1>
+     </div>
+
+     <a href="{{ url_for('register') }}">
+        <button class = "sign-up-button">
+            Register Now!
+        </button>
+     </a>
+</div>
+{% endblock %}

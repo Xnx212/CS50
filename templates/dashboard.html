@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% block content %}
+<body class = "dash">
+    <h1>Dashboard</h1>
+    <div class = 'overview'>
+    <div class = 'o-c'>
+    <h1 class = 't-i'>Incomes</h1>
+    <h2> &#36 {{Total_income}}</h2>
+    </div>
+    <div class = 'o-c1'>
+    <h1 class = 't-i'>Expenses</h1>
+    <h2> &#36 {{Total_expense}}</h2>
+    </div>
+    <div class = 'o-c2'>
+    <h1 class = 't-i'>Savings</h1>
+    <h2> &#36 {{savings}}</h2>
+    </div>
+    </div>
+    <div class = "dash-wrapper">
+    <h1>Incomes</h1>
+    <form method="POST" action="{{ url_for('add_income') }}">
+        <div class = 'dash-input-box'>
+        <input type="text" name="description" placeholder="Description" required>
+        </div>
+        <div class = 'dash-input-box'>
+        <input type="number" step="0.01" name="amount" placeholder="Amount" required>
+        </div>
+        <button class = 'btn' type="submit">Add Income</button>
+    </form>
+
+    <h1>Expenses</h1>
+    <form method="POST" action="{{ url_for('add_expense') }}">
+        <div class = 'dash-input-box'>
+        <input type="text" name="description" placeholder="Description" required>
+        </div>
+        <div class = 'dash-input-box'>
+        <input type="number" step="0.01" name="amount" placeholder="Amount" required>
+        </div>
+        <button class = 'btn' type="submit">Add Expense</button>
+    </form>
+    </div>
+
+    <div class="table">
+
+        <h2>Recent Transactions</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                    <th>Date & Time </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- TODO: Loop through the database entries to display them in this table -->
+
+
+                        {% for income in incomes %}
+                        <tr>
+                        <td>
+                        <form action="{{ url_for('deletei', id=income.id) }}" method="post" style="display:inline;">
+                            <button type="submit" class="btn-delete">Delete</button>
+                        </form>
+                        </td>
+                        <td>{{income["description"]}}</td>
+                        <td>&#36 {{income["amount"]}}</td>
+                        <td>{{income["type"]}}</td>
+                        <td>{{income["date"]}}</td>
+                        </tr>
+                        {% endfor %}
+                        {% for expense in expenses %}
+                        <tr>
+                        <td>
+                            <form action="{{ url_for('deletee', id=expense.id) }}" method="post" style="display:inline;">
+                                <button type="submit" class="btn-delete">Delete</button>
+                            </form>
+                        </td>
+                        <td>{{expense["description"]}}</td>
+                        <td>&#36 {{expense["amount"]}}</td>
+                        <td>{{expense["type"]}}</td>
+                        <td>{{expense["date"]}}</td>
+                        </tr>
+                        {% endfor %}
+
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="card">
+    <div class="card-style">
+        <div class="card-body">
+            <div class="chart-container" style="position: relative;">
+                <canvas id="overtime_incomes"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="card-style">
+        <div class="card-body">
+            <div class="chart-container" style="position: relative;">
+                <canvas id="overtime_expenditure"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+{% block javascript %}
+    <script>
+        over_time_expenditure = JSON.parse({{over_time_expenditure | tojson}})
+        labels = JSON.parse({{ dates_label  | tojson}})
+
+        new Chart(document.getElementById("overtime_expenditure"), {
+                type: "line",
+                data:
+                {
+                    labels: labels,
+                    datasets: [{
+                        label: "Expenditure Over Time",
+
+                        data: over_time_expenditure,
+                        fill: false,
+                        borderColor: "rgb(75, 192, 192)",
+                        lineTension: 0.1
+                    }]
+                },
+                options: {}
+            });
+    </script>
+    <script>
+        over_time_incomes = JSON.parse({{over_time_incomes | tojson}})
+        labels = JSON.parse({{ dates_label1  | tojson}})
+
+        new Chart(document.getElementById("overtime_incomes"), {
+                type: "line",
+                data:
+                {
+                    labels: labels,
+                    datasets: [{
+                        label: "Income Over Time",
+
+                        data: over_time_incomes,
+                        fill: false,
+                        borderColor: "rgb(75, 192, 192)",
+                        lineTension: 0.1
+                    }]
+                },
+                options: {}
+            });
+    </script>
+{% endblock %}
+{% endblock %}
